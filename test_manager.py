@@ -13,30 +13,23 @@ def split_data(file_bytes, num_chunks):
         raise ValueError("Jumlah potongan harus lebih dari 0")
         
     total_size = len(file_bytes)
-    # Hitung ukuran rata-rata per potongan
     chunk_size = math.ceil(total_size / num_chunks)
     
     chunks_with_header = []
     
     for i in range(num_chunks):
-        # Tentukan titik potong awal dan akhir
         start = i * chunk_size
         end = start + chunk_size
         
-        # Ambil potongan data (slice)
-        # Python otomatis menangani jika 'end' melebihi panjang data
         payload = file_bytes[start:end]
         
-        # Jika payload kosong (misal file sangat kecil tapi gambar banyak), skip
         if not payload:
             continue
             
         # BUAT HEADER
-        # Format: "urutan|total|" (Urutan dimulai dari 1, bukan 0)
         header_str = f"{i+1}|{num_chunks}|"
         header_bytes = header_str.encode('utf-8')
         
-        # Gabungkan Header + Data Asli
         final_chunk = header_bytes + payload
         chunks_with_header.append(final_chunk)
         
@@ -53,20 +46,16 @@ def merge_data(list_of_chunks):
     if not list_of_chunks:
         return b""
         
-    # List sementara untuk menampung (urutan, data_bersih)
     sorted_buffer = []
     
     for chunk in list_of_chunks:
         try:
             # PARSING HEADER
-            # Cari posisi tanda pipa '|' pertama dan kedua
-            # Contoh header: b"1|5|data..."
             
             first_pipe = chunk.find(b'|')
             second_pipe = chunk.find(b'|', first_pipe + 1)
             
             if first_pipe == -1 or second_pipe == -1:
-                # Jika tidak ada tanda pipa, mungkin ini bukan data kita atau chunk rusak
                 print("Warning: Chunk rusak atau tidak ada header. Melewati chunk ini.")
                 continue
                 
@@ -75,10 +64,8 @@ def merge_data(list_of_chunks):
             index = int(index_str)
             
             # Ambil Data Bersih (Payload)
-            # Data dimulai setelah tanda pipa kedua (+1)
             clean_payload = chunk[second_pipe+1:]
             
-            # Masukkan ke buffer
             sorted_buffer.append((index, clean_payload))
             
         except ValueError:
@@ -86,7 +73,6 @@ def merge_data(list_of_chunks):
             continue
             
     # URUTKAN BERDASARKAN INDEX (item[0])
-    # Ini penting karena input dari user mungkin urutannya acak
     sorted_buffer.sort(key=lambda x: x[0])
     
     # GABUNGKAN DATA (Reassembly)
