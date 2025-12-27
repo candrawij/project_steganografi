@@ -3,6 +3,7 @@ import time
 import io
 import pandas as pd
 import random
+from utils.processor import process_encryption, process_decryption
 
 # ==========================================
 # KONFIGURASI HALAMAN (HARUS DI PALING ATAS)
@@ -155,7 +156,8 @@ with tab1:
 
     if st.button("🚀 EKSEKUSI STEGANOGRAFI", type="primary"):
         if secret_file and cover_files:
-            zip_out, name_out, logs = process_encryption_dummy(secret_file, cover_files)
+            zip_out, name_out = process_encryption(secret_file, cover_files)
+            logs = ["[INFO] Proses Enkripsi & Sharding Selesai.", "[INFO] File siap diunduh."] # Log manual
             
             col_res1, col_res2 = st.columns([2, 1])
             with col_res1:
@@ -182,10 +184,16 @@ with tab2:
         st.info(f"{len(stego_files)} fragmen terdeteksi.")
         if st.button("🔍 SCAN & REASSEMBLE"):
             # Mockup proses
-            with st.spinner("Mengekstrak bit dari piksel..."):
-                time.sleep(2)
-                st.success("File berhasil direkonstruksi!")
-                st.balloons()
+                with st.spinner("Mengekstrak bit dari piksel..."):
+                    try:
+                        file_buffer, file_name = process_decryption(stego_files)
+                        st.success(f"File berhasil direkonstruksi: {file_name}")
+
+             # Tambahkan tombol download baru di sini untuk file hasil
+                        st.download_button("⬇️ Download File Asli", file_buffer, file_name)
+                    except Exception as e:
+                        st.error(f"Gagal Dekripsi: {e}")
+                        st.balloons()
 
 # --- TAB 3: ANALISIS (Nilai Plus Dosen) ---
 with tab3:
