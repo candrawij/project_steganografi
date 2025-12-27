@@ -1,0 +1,58 @@
+# ========================
+# 1. Python & System Junk
+# ========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.DS_Store
+Thumbs.db
+
+# ========================
+# 2. Virtual Environment
+# ========================
+# Folder venv tidak boleh di-upload karena ukurannya besar
+# dan spesifik untuk komputer masing-masing.
+venv/
+env/
+.env
+.venv/
+
+# ========================
+# 3. IDE & Editor Settings
+# ========================
+.vscode/
+.idea/
+*.swp
+
+# ========================
+# 4. Streamlit Specific
+# ========================
+# Menyembunyikan secrets/password jika nanti pakai cloud
+.streamlit/secrets.toml
+
+# ========================
+# 5. Project Outputs & Temp Files
+# ========================
+# Mencegah file hasil tes steganografi ter-upload otomatis
+*.zip
+*.rar
+output/
+temp/
+
+# Mencegah file rahasia/input tes ter-upload (Keamanan)
+*.pdf
+*.docx
+*.xlsx
+*.txt
+
+# Abaikan gambar tes di root folder (agar repo tetap bersih)
+# Kecuali kamu menaruh aset logo web di folder 'assets'
+*.png
+*.jpg
+*.jpeg
+*.bmp
+
+# TAPI, izinkan gambar jika ditaruh di folder khusus aset (untuk UI Streamlit)
+!assets/*.png
+!assets/*.jpg
